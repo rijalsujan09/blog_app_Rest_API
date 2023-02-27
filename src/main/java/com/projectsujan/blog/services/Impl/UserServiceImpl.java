@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.projectsujan.blog.entity.User;
@@ -18,14 +19,18 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	private ModelMapper modelMapper;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@Override
 	public UserDto createUser(UserDto userDto) {
 
 		User user = this.dtoToUser(userDto);
+		user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
 		User savedUser = this.userRepository.save(user);
 
@@ -39,7 +44,7 @@ public class UserServiceImpl implements UserService {
 
 		user.setName(userDto.getName());
 		user.setEmail(userDto.getEmail());
-		user.setPassword(userDto.getPassword());
+		user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 		user.setAbout(userDto.getAbout());
 
 		User updatedUser = this.userRepository.save(user);
@@ -57,22 +62,21 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<UserDto> getAllUsers() {
 		List<User> users = this.userRepository.findAll();
-		List <UserDto>userDtos = users.stream().map(user -> this.userToDto(user)).collect(Collectors.toList());
+		List<UserDto> userDtos = users.stream().map(user -> this.userToDto(user)).collect(Collectors.toList());
 		return userDtos;
 	}
 
 	@Override
 	public void deleteUser(Integer id) {
-	User user =	this.userRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException( "User","Id" , id));
+		User user = this.userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User", "Id", id));
 
 		this.userRepository.delete(user);
 	}
 
-	
-	// to convert DTO to  user
+	// to convert DTO to user
 	private User dtoToUser(UserDto userDto) {
-		
-		User user  = this.modelMapper.map(userDto, User.class);
+
+		User user = this.modelMapper.map(userDto, User.class);
 
 //		User user = new User();
 //		user.setId(userDto.getId());
@@ -84,10 +88,9 @@ public class UserServiceImpl implements UserService {
 		return user;
 	}
 
-	
 	// to convert user to DTO
 	private UserDto userToDto(User user) {
-		
+
 		UserDto userDto = this.modelMapper.map(user, UserDto.class);
 
 //		UserDto userDto = new UserDto();
