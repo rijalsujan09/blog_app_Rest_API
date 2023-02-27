@@ -88,6 +88,7 @@ public class PostController {
 		return new ResponseEntity<PostDto>(updatedpost, HttpStatus.OK);
 	}
 
+	
 	// Search
 	@GetMapping("/posts/search")
 	public ResponseEntity<List<PostDto>> searchPostByTitle(@RequestParam("keywords") String keywords) {

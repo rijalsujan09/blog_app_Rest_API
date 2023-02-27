@@ -46,6 +46,7 @@ public class PostServiceImpl implements PostService {
 				.orElseThrow(() -> new ResourceNotFoundException("User", "user_Id", userId));
 		Category category = this.categoryRepository.findById(categoryId)
 				.orElseThrow(() -> new ResourceNotFoundException("Category", "Category_Id", categoryId));
+		
 
 		Post post = this.modelMapper.map(postDto, Post.class);
 		post.setImageName("default.png");
@@ -55,8 +56,11 @@ public class PostServiceImpl implements PostService {
 		post.setCategory(category);
 
 		Post newPost = this.postRepository.save(post);
+		
 
 		return this.modelMapper.map(newPost, PostDto.class);
+		
+		
 	}
 
 	@Override
@@ -151,7 +155,9 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public List<PostDto> searchPosts(String keyword) {
+		
 		List<Post> posts  = this.postRepository.findByTitleContaining(keyword);
+		
 		List<PostDto> postDtos  =posts.stream().map((post) -> this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
 		return postDtos;
 	}
