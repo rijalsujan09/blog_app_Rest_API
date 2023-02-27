@@ -15,19 +15,24 @@ import lombok.Setter;
 @Setter
 @Data
 public class UserDto {
+	
 	private Integer id;
 	@NotEmpty
 	@Size(min=4, message = "username must be minimum of 4 character !!")
 	private  String name;
+	
 	@Email(message = "Email adress is not Valid !!")
 	@NotEmpty
 	private String email;
+	
 	@NotEmpty
 	@Size(min=6, max=15, message = "password must be minimum 4 chars and and max of 9 char ")
 	private String password;
+	
 	@NotEmpty
 	@Size(min=20 ,max = 100)
 	private String about;
+	
 	
 	public Integer getId() {
 		return id;
